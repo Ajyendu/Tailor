@@ -1,21 +1,30 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux"; // ✅ Fix 1: import useDispatch
 import { updateCloth } from "../Context/ClothSlice";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 
 // ✅ Fix 3: accept editMode and onClose as separate props (was <ClothEditWindow id={{ editMode }} />)
 function ClothEditWindow({ editMode, onClose }) {
-  const dispatch = useDispatch(); // ✅ Fix 1: declare dispatch
   const allClothPrices = useSelector((state) => state.cloth.clothes);
-  const { register, handleSubmit } = useForm();
-
   const cloth = allClothPrices.find((c) => c.id === editMode); // ✅ Fix 2: was c.id = editMode (assignment bug)
-  const sizes = cloth?.sizes || [];
+  const size = cloth?.sizes || [];
+  const dispatch = useDispatch(); // ✅ Fix 1: declare dispatch
+
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: {
+      name: cloth?.name || "",
+      sizes: cloth?.sizes || [],
+    },
+  });
 
   const updateHandler = (data) => {
     dispatch(updateCloth({ id: editMode, ...data }));
     onClose(); // ✅ Fix 4: close edit window after saving
   };
+  const { fields, append, remove, insert } = useFieldArray({
+    control,
+    name: "sizes",
+  });
 
   return (
     <div>
@@ -35,17 +44,6 @@ function ClothEditWindow({ editMode, onClose }) {
           />
         </div>
 
-        <div className="field-group">
-          <label className="field-label">Labour Charges (₹)</label>
-          <input
-            className="field-input"
-            type="number"
-            placeholder="0"
-            defaultValue={cloth?.charges}
-            {...register("charges", { required: true })}
-          />
-        </div>
-
         <label className="field-label">Sizing</label>
 
         <table className="results-table">
@@ -53,26 +51,54 @@ function ClothEditWindow({ editMode, onClose }) {
             <tr>
               <th>Size</th>
               <th>Cloth Used </th>
+              <th>Making Charge </th>
+              <th> </th>
             </tr>
           </thead>
           <tbody>
-            {sizes.map((item, index) => (
-              <tr key={index}>
+            {fields.map((item, index) => (
+              <tr key={item.id}>
                 <td>
                   <input
                     type="number"
-                    defaultValue={item.label}
                     className="field-input"
                     {...register(`sizes.${index}.label`)}
                   />
                 </td>
+
                 <td>
                   <input
                     type="number"
-                    defaultValue={item.actual}
                     className="field-input"
                     {...register(`sizes.${index}.actual`)}
                   />
+                </td>
+
+                <td>
+                  <input
+                    type="number"
+                    className="field-input"
+                    {...register(`sizes.${index}.makingCharge`)}
+                  />
+                </td>
+
+                <td>
+                  <button type="button" onClick={() => remove(index)}>
+                    <img src="./public/minus.png" className="h-4 w-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      insert(index + 1, {
+                        label: "",
+                        actual: "",
+                        makingCharge: "",
+                      })
+                    }
+                  >
+                    {" "}
+                    <img src="./public/add.png" className="h-4 w-12" />
+                  </button>
                 </td>
               </tr>
             ))}

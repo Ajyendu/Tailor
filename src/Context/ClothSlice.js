@@ -22,7 +22,7 @@ export const ClothSlice = createSlice({
       const cloth = {
         id: nanoid(),
         name: action.payload.name,
-        charges: action.payload.labourCharge,
+        makingCharge: action.payload.makingCharge,
         sizes: action.payload.sizes,
       };
       state.clothes.push(cloth);
@@ -38,7 +38,7 @@ export const ClothSlice = createSlice({
       );
       if (cloth) {
         cloth.name = action.payload.name;
-        cloth.charges = action.payload.charges;
+        cloth.makingCharge = action.payload.makingCharge;
         cloth.sizes = action.payload.sizes; // ✅ Fix: was action.payload.charges (copy-paste bug)
       }
     },
