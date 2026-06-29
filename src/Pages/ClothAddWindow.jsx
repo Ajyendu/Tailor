@@ -88,7 +88,7 @@ function ClothAddWindow({ onClose }) {
 
               <td>
                 <button type="button" onClick={() => remove(index)}>
-                  <img src="./public/minus.png" className="h-4 w-3" />
+                  -
                 </button>
                 <button
                   type="button"
@@ -101,7 +101,7 @@ function ClothAddWindow({ onClose }) {
                   }
                 >
                   {" "}
-                  <img src="./public/add.png" className="h-4 w-12" />
+                  +
                 </button>
               </td>
             </tr>
