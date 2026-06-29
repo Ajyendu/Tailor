@@ -1,65 +1,28 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-
 export function calculation({
   labourCharge,
-  id,
+  sizes,
   price,
-  embroideryCharges,
-  extraCharges,
+  embroideryCharge,
+  extraCharge,
 }) {
-  const costPrice = true;
-  const withGST = true;
+  const prices = sizes.map((item) => {
+    let base = (Number(item.actual) / 100) * parseFloat(price || 0);
 
-  const sizeData = [
-    { label: 20, actual: 105 },
-    { label: 22, actual: 105 },
-    { label: 24, actual: 105 },
-    { label: 26, actual: 105 },
-    { label: 28, actual: 105 },
-    { label: 30, actual: 105 },
-    { label: 32, actual: 105 },
-    { label: 34, actual: 105 },
-    { label: 36, actual: 105 },
-    { label: 38, actual: 105 },
-    { label: 40, actual: 105 },
-    { label: 42, actual: 105 },
-  ];
+    if (embroideryCharge) base += parseFloat(embroideryCharge || 0);
+    if (extraCharge) base += parseFloat(extraCharge || 0);
 
-  const prices = sizeData.map((item) => {
-    let base = (item.actual / 100) * parseFloat(price || 0);
+    base += parseFloat(labourCharge || 0);
 
-    if (embroideryCharges) {
-      base += parseFloat(embroideryCharges || 0);
-    }
-
-    if (extraCharges) {
-      base += parseFloat(extraCharges || 0);
-    }
-
-    base += parseFloat(labourCharge);
-
-    const gstAmount = base * 1.4 * 0.05;
     const sale = base * 1.4;
+    const gstAmount = sale * 0.05;
 
-    const priceObj = {
+    return {
       size: item.label,
+      costPrice: base.toFixed(2),
+      salePrice: (sale + gstAmount).toFixed(2),
+      profit: (sale + gstAmount - base).toFixed(2),
     };
-
-    if (costPrice) {
-      priceObj.costPrice = base.toFixed(2);
-      priceObj.salePrice = withGST
-        ? (sale + gstAmount).toFixed(2)
-        : sale.toFixed(2);
-      priceObj.profit = (parseFloat(priceObj.salePrice) - base).toFixed(2);
-    } else {
-      priceObj.salePrice = sale.toFixed(2);
-    }
-    if (withGST) {
-      priceObj.salePrice = (sale + gstAmount).toFixed(2);
-    }
-
-    return priceObj;
   });
+
   return prices;
 }

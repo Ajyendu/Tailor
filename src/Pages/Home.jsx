@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import ClothAddWindow from "./ClothAddWindow";
+import ClothEditWindow from "./ClothEditWindow";
 import { calculation } from "../Utils/Calculation";
-import { removeCloth, updateCloth } from "../Context/ClothSlice"; // ✅ added updateCloth import
+import { removeCloth } from "../Context/ClothSlice";
 
 function Home() {
-  const { register, handleSubmit } = useForm();
-
-  // ✅ Fixed: was `const {editMode, setEditMode} = useState()` — destructuring useState returns an array, not an object
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const allClothPrices = useSelector((state) => state.cloth.clothes);
   const [editMode, setEditMode] = useState(null);
   const [summary, setSummary] = useState(null);
   const [adminMode, setAdminMode] = useState(false);
@@ -16,7 +20,6 @@ function Home() {
   const [selectedId, setSelectedId] = useState(null);
   const [result, setResult] = useState(null);
 
-  const allClothPrices = useSelector((state) => state.clothes);
   const dispatch = useDispatch();
 
   const removeHandler = (id) => {
@@ -24,22 +27,20 @@ function Home() {
     if (selectedId === id) setSelectedId(null);
   };
 
-  // ✅ Fixed: was referencing `id` which is not in scope — use `editMode` as the id
-  const updateHandler = (data) => {
-    dispatch(updateCloth({ id: editMode, ...data }));
-    setEditMode(null);
-  };
-
   const sendPrices = (data) => {
-    const cloth = allClothPrices.find((item) => item.id == data.clothType);
-    const labourCharge = cloth?.charges || 0;
+    console.log("triggering1");
+    const cloth = allClothPrices.find((item) => item.id == selectedId);
+    console.log(data.clothType);
+    if (!cloth) return;
+
     const res = calculation({
-      labourCharge,
-      id: data.clothType,
+      labourCharge: cloth.charges,
+      sizes: cloth.sizes,
       price: data.fabricPrice,
       embroideryCharge: data.embroideryCharge,
       extraCharge: data.extraCharge,
     });
+
     setResult(res);
     setSummary({
       fabricPrice: data.fabricPrice,
@@ -49,16 +50,18 @@ function Home() {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
+  useEffect(() => {
+    localStorage.setItem("clothes", JSON.stringify(allClothPrices));
+  }, [allClothPrices]);
+
   return (
     <div className="home-page">
-      {/* ── Header ── */}
       <div className="home-header">
         <h1 className="home-title">Garment Price Calculator</h1>
         <p className="home-subtitle">Cost &amp; Margin Breakdown by Size</p>
       </div>
 
       <div className="home-layout">
-        {/* ── Form Card ── */}
         <div className="home-card no-print">
           <button
             className="admin-btn"
@@ -69,12 +72,10 @@ function Home() {
 
           <div className="section-label">Clothing Type</div>
 
-          <form onSubmit={handleSubmit(editMode ? updateHandler : sendPrices)}>
+          <form onSubmit={handleSubmit(sendPrices)}>
             <div className="cloth-types">
               {allClothPrices.map(({ id, name }) => (
                 <label key={id}>
-                  {/* ✅ Fixed: `{...register("clothType"), {required: ...}}` is a comma expression bug
-                       — spread only the register return value; validation goes inside register() */}
                   <input
                     className="cloth-chip-input"
                     type="radio"
@@ -107,7 +108,6 @@ function Home() {
                         >
                           ✕
                         </button>
-                        {/* ✅ Fixed: edit button was also showing "✕" and had no distinct action — now shows ✎ */}
                         <button
                           type="button"
                           className="chip-edit-btn"
@@ -126,94 +126,35 @@ function Home() {
                   </span>
                 </label>
               ))}
-              <div className="edit-actions">
-                <button
-                  type="button"
-                  className="cloth-add-btn"
-                  onClick={() => {
-                    setAddWindow(true);
-                    setSelectedId(null);
-                    setEditMode(null);
-                  }}
-                >
-                  +
-                </button>
-              </div>
+              {adminMode && (
+                <div className="edit-actions">
+                  <button
+                    type="button"
+                    className="cloth-add-btn"
+                    onClick={() => {
+                      setAddWindow(true);
+                      setSelectedId(null);
+                      setEditMode(null);
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Add window */}
             {addWindow && !editMode && (
-              <div>
-                <ClothAddWindow />
-                <div className="edit-actions">
-                  <div
-                    className="calc-btn flex justify-center"
-                    onClick={() => setAddWindow(false)}
-                    style={{ backgroundColor: "green" }}
-                  >
-                    Close
-                  </div>
-                </div>
-              </div>
+              <ClothAddWindow onClose={() => setAddWindow(false)} />
             )}
 
-            {/* Edit mode — update labour/name for the selected cloth type */}
+            {/* Edit window */}
+            {/* ✅ Fix: was <ClothEditWindow id={{ editMode }} /> — wrong prop shape */}
             {editMode && !addWindow && (
-              <div>
-                <p className="section-label">
-                  Editing:{" "}
-                  <strong>
-                    {allClothPrices.find((c) => c.id === editMode)?.name}
-                  </strong>
-                </p>
-
-                <div className="field-group">
-                  <label className="field-label">Cloth Name</label>
-                  <input
-                    className="field-input"
-                    type="text"
-                    defaultValue={
-                      allClothPrices.find((c) => c.id === editMode)?.name
-                    }
-                    placeholder="e.g. Kurta"
-                    {...register("name", { required: true })}
-                  />
-                </div>
-
-                <div className="field-group">
-                  <label className="field-label">Labour Charges (₹)</label>
-                  <input
-                    className="field-input"
-                    type="number"
-                    placeholder="0"
-                    defaultValue={
-                      allClothPrices.find((c) => c.id === editMode)?.charges
-                    }
-                    {...register("charges", { required: true })}
-                  />
-                </div>
-
-                <div className="edit-actions">
-                  <button
-                    type="submit"
-                    onClick={() => setEditMode(false)}
-                    className="calc-btn"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-
-                <div className="edit-actions">
-                  <button
-                    type="submit"
-                    className="calc-btn"
-                    onClick={() => setEditMode(null)}
-                    style={{ backgroundColor: "Green" }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
+              <ClothEditWindow
+                editMode={editMode}
+                onClose={() => setEditMode(null)}
+              />
             )}
 
             {/* Normal price entry */}
@@ -235,7 +176,7 @@ function Home() {
                     className="field-input"
                     type="number"
                     placeholder="0"
-                    {...register("embroideryCharge", { required: true })}
+                    {...register("embroideryCharge")}
                   />
                 </div>
 
@@ -249,6 +190,10 @@ function Home() {
                   />
                 </div>
 
+                {errors.clothType && (
+                  <p className="text-red-500">{errors.clothType.message}</p>
+                )}
+
                 <button type="submit" className="calc-btn">
                   Calculate Prices
                 </button>
@@ -257,7 +202,7 @@ function Home() {
           </form>
         </div>
 
-        {/* ── Results Card ── */}
+        {/* Results Card */}
         {result && summary && (
           <div className="home-results-card" id="print-area">
             <div className="results-header">
