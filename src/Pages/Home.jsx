@@ -272,17 +272,20 @@ function Home() {
 
             <div className="price-summary">
               <div className="summary-row">
-                <span>Fabric Price</span>
-                <span>₹{summary.fabricPrice}</span>
+                <label className="field-label">
+                  Fabric Price ₹{summary.fabricPrice}
+                </label>
               </div>
               <div className="summary-row">
-                <span>Embroidery Charges</span>
-                <span>₹{summary.embroideryCharge}</span>
+                <label className="field-label">
+                  Embroidery Charges ₹{summary.embroideryCharge}
+                </label>
               </div>
               {summary.extraCharge > 0 && (
                 <div className="summary-row">
-                  <span>Extra Charges</span>
-                  <span>₹{summary.extraCharge}</span>
+                  <label className="field-label">
+                    Extra Charges ₹{summary.extraCharge}
+                  </label>
                 </div>
               )}
             </div>
