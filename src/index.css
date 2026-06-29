@@ -1,0 +1,371 @@
+@import "tailwindcss";
+
+/* ─── Variables ───────────────────────────────────────────── */
+:root {
+  --color-indigo: #1e1b4b;
+  --color-ivory: #faf7f2;
+  --color-linen: #ede8df;
+  --color-gold: #c9a84c;
+  --color-gold-dark: #b8923e;
+  --color-slate: #4a4a6a;
+  --color-border: #d5cfc5;
+  --color-input-border: #c5bfb5;
+  --color-profit: #2d7a4f;
+  --font-display: "Playfair Display", serif;
+  --font-body: "Inter", sans-serif;
+  --radius-card: 16px;
+  --radius-btn: 10px;
+  --shadow-card: 0 4px 24px rgba(30, 27, 75, 0.08);
+}
+
+/* ─── Page ────────────────────────────────────────────────── */
+.home-page {
+  min-height: 100vh;
+  background-color: var(--color-ivory);
+  background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      var(--color-linen) 28px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 27px,
+      var(--color-linen) 28px
+    );
+  font-family: var(--font-body);
+  padding: 2rem 1rem;
+}
+
+/* ─── Header ──────────────────────────────────────────────── */
+.home-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.home-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-indigo);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.home-subtitle {
+  color: var(--color-slate);
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── Layout ──────────────────────────────────────────────── */
+.home-layout {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* ─── Cards ───────────────────────────────────────────────── */
+.home-card {
+  background: var(--color-linen);
+  border-radius: var(--radius-card);
+  padding: 1.75rem;
+  width: 420px;
+
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+}
+
+.home-results-card {
+  background: var(--color-linen);
+  border-radius: var(--radius-card);
+  padding: 1.75rem;
+  width: 420px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+}
+
+/* ─── Admin Button ────────────────────────────────────────── */
+.admin-btn {
+  padding: 0.3rem 0.85rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--color-slate);
+  background: transparent;
+  color: var(--color-slate);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.admin-btn:hover {
+  background: var(--color-slate);
+  color: white;
+}
+
+/* ─── Section Label ───────────────────────────────────────── */
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-slate);
+  margin-bottom: 0.75rem;
+}
+
+/* ─── Cloth Type Chips ────────────────────────────────────── */
+.cloth-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.cloth-chip-input {
+  display: none;
+}
+
+.cloth-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-gold);
+  background: white;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--color-indigo);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+
+.cloth-chip.selected {
+  background: var(--color-indigo);
+  color: white;
+  border-color: var(--color-indigo);
+}
+
+.chip-remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gold);
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0 2px;
+  display: flex;
+  align-items: center;
+}
+
+.chip-remove-btn:hover {
+  color: #e05c5c;
+}
+
+.cloth-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--color-gold);
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-gold);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.cloth-add-btn:hover {
+  background: rgba(201, 168, 76, 0.1);
+}
+
+/* ─── Add Window Close ────────────────────────────────────── */
+.add-window-close {
+  text-align: center;
+  cursor: pointer;
+  color: var(--color-slate);
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.add-window-close:hover {
+  color: var(--color-indigo);
+}
+
+/* ─── Form Fields ─────────────────────────────────────────── */
+.field-group {
+  margin-bottom: 1rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-slate);
+  margin-bottom: 0.4rem;
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--color-input-border);
+  background: white;
+  font-size: 0.95rem;
+  color: var(--color-indigo);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: var(--font-body);
+}
+
+.field-input:focus {
+  border-color: var(--color-gold);
+}
+
+/* ─── Calculate Button ────────────────────────────────────── */
+.calc-btn {
+  margin-top: 1.25rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--color-gold);
+  color: var(--color-indigo);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: var(--font-body);
+}
+
+.calc-btn:hover {
+  background: var(--color-gold-dark);
+}
+
+/* ─── Results Header ──────────────────────────────────────── */
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.results-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-indigo);
+  margin: 0;
+}
+
+/* ─── Print Button ────────────────────────────────────────── */
+.print-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--color-indigo);
+  color: white;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  font-family: var(--font-body);
+}
+
+.print-btn:hover {
+  opacity: 0.8;
+}
+
+/* ─── Results Table ───────────────────────────────────────── */
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.results-table thead th {
+  padding: 0.6rem 0.75rem;
+  background: var(--color-indigo);
+  color: var(--color-ivory);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  border: none;
+}
+
+.results-table thead th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.results-table thead th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.results-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.results-table tbody td {
+  padding: 0.6rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-indigo);
+}
+
+.results-table tbody td.profit-cell {
+  color: var(--color-profit);
+  font-weight: 600;
+}
+
+/* ─── Footer Note ─────────────────────────────────────────── */
+.results-date {
+  font-size: 0.72rem;
+  color: var(--color-slate);
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+/* ─── Print Media ─────────────────────────────────────────── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+
+  #print-area {
+    position: fixed;
+    inset: 0;
+    padding: 2rem;
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
